@@ -1,0 +1,28 @@
+#ifndef FILE_H
+#define FILE_H
+
+#include <string>
+#include <vector>
+#include <array>
+
+class window;
+
+class file
+{
+private:
+    //Vector containing all the files path
+    std::vector<std::string> files_path;
+
+    //String containing the output file
+    std::string output_file;
+
+    //Method called to verify if a file path already exists or not
+    bool verify_file(std::string file_path);
+
+public:
+    //Methods called by the signal handlers in order to open a file and
+    std::array<bool, 3> file_opener(window &win);
+    void file_saver(window &win, bool saveas);
+};
+
+#endif //FILE_H
