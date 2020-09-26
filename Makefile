@@ -1,9 +1,9 @@
 ifeq ($(OS), win)
-	TOOLCHAIN := x86_64-w64-mingw32.static-
-	APP := app.exe
+	TOOLCHAIN := x86_64-w64-mingw32.shared-
+	APP := userdatabase.exe
 else
 	TOOLCHAIN :=
-	APP := app
+	APP := userdatabase
 endif
 
 CXX=$(TOOLCHAIN)g++
@@ -12,7 +12,7 @@ AR=$(TOOLCHAIN)ar
 PKG_CONFIG=$(TOOLCHAIN)pkg-config
 
 OBJS = main.o toolbar.o file.o window.o user_list.o user_menu.o user_search.o user_assistant.o warn_list.o warn_menu.o warn_assistant.o birthday_window.o birthday_list.o dialog.o months.o
-FLAGS = -std=c++11 -MMD -ffunction-sections -fdata-sections	#add -mwindows before -std=c++11 to hide the terminal
+FLAGS = -mwindows -std=c++11 -MMD -ffunction-sections -fdata-sections	
 
 
 $(APP): $(OBJS)

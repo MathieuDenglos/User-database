@@ -1,4 +1,5 @@
 .vscode/
-app.exe
+userdatabase.exe
+userdatabase
 *.o
 *.d

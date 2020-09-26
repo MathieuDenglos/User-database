@@ -36,9 +36,13 @@ window::window() : Gtk::ApplicationWindow(),
     warn_frame.add(warn_box);
     box.pack_start(warn_frame, Gtk::PACK_SHRINK);
 
+    //add all the elements to the window
     add(box);
 
+    //sets the application logo
+    property_icon() = Gdk::Pixbuf::create_from_file("share/app_logo.png");
 
+    //sets the default side and add a signal ahndlers to detect each time the window is resized, to resize correctly the visible widgets
     signal_check_resize().connect(sigc::mem_fun(*this, &window::on_resize));
     set_default_size(420, 300);
     set_size_request(420, 50);
@@ -82,8 +86,10 @@ void window::set_warn_visibility(bool state)
 
 void window::change_title(bool saved)
 {
-    if(saved) set_title("User database");
-    else set_title("User database (unsaved)");
+    if (saved)
+        set_title("User database");
+    else
+        set_title("User database (unsaved)");
 }
 
 user_list &window::get_user_list()
