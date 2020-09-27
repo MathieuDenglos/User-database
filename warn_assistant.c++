@@ -72,7 +72,7 @@ void warn_assistant::on_user_selected()
 void warn_assistant::on_info_changed()
 {
     //verify if the warn_assistant is complete and if the user can click on apply
-    set_page_complete(page1_box, (warn_ID_adjustment->get_value() != 0 && ID_entry.get_text() != "000000000000000000"));
+    set_page_complete(page1_box, (warn_ID_adjustment->get_value() != 0));
 }
 
 void warn_assistant::launch_assistant(window &win,
@@ -94,7 +94,7 @@ void warn_assistant::launch_assistant(window &win,
     {
         set_title("add warn");
         user_combo.set_active(0);
-        ID_entry.set_text("000000000000000000");
+        ID_entry.set_text(std::to_string((*win.get_user_list().get_model()->children().begin())[win.get_user_list().get_columns().ID]));
         warn_ID_adjustment->set_value(0);
         reason_buffer->set_text("");
         on_info_changed();

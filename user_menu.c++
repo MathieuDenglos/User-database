@@ -105,6 +105,8 @@ void user_menu::on_remove_user(user_list &users, window &win)
                              "add users before removing them");
 }
 
+#include <iostream>
+
 void user_menu::on_assistant_apply(window &win, user_list &users, warn_list &warns)
 {
     //Grab the data that the user entered in the user_assistant
@@ -123,43 +125,53 @@ void user_menu::on_assistant_apply(window &win, user_list &users, warn_list &war
     //Before adding/editing the user we need to verify :
     //If in add mode : that the use doesn't already exists
     //If in edit mode : that the new (if new) ID entered isn't the same as another user
-    Gtk::TreeModel::Children::iterator user_iter = users.get_model()->children().begin();
-    if (!(edit_ID != 0 && temp_ID == edit_ID))
-        while (user_iter != users.get_model()->children().end() && (*user_iter)[users.get_columns().ID] != edit_ID)
-            user_iter++;
+    Gtk::TreeModel::Children::iterator user_iter = (edit_ID != 0 && temp_ID == edit_ID) ? users.get_model()->children().end() : users.get_model()->children().begin();
+
+    while (user_iter != users.get_model()->children().end() && (*user_iter)[users.get_columns().ID] != temp_ID)
+        user_iter++;
 
     //We now have an iterator, if this iterator is valid or the size of the treeview is 0, it means the new user is valid
-    if (users.get_model()->children().size() == 0 || user_iter != users.get_model()->children().end())
+    if (users.get_model()->children().size() == 0 || user_iter == users.get_model()->children().end())
     {
         Gtk::TreeModel::Row row;
+        Gtk::TreeModel::Path path;
         //Either create a new row (if in add mode) or find the edited row (we could get the selection but it might change during editing)
         if (edit_ID != 0)
-            row = *user_iter;
+        {
+            Gtk::TreeModel::Children::iterator user_iter = users.get_model()->children().begin();
+
+            while ((*user_iter)[users.get_columns().ID] != edit_ID)
+                user_iter++;
+
+            path = users.get_model()->get_path(user_iter);
+        }
         else
             row = *(users.get_model()->append());
 
         if (edit_ID != 0)
-            warns.modify_warns(row[users.get_columns().ID], temp_ID, temp_username);
+            warns.modify_warns(edit_ID, temp_ID, temp_username);
 
-        row[users.get_columns().username] = temp_username;
         if (edit_ID != 0)
-            row = *(users.get_selection()->get_selected());
+            row = *users.get_model()->get_iter(path);
         row[users.get_columns().tag] = temp_tag;
         if (edit_ID != 0)
-            row = *(users.get_selection()->get_selected());
+            row = *users.get_model()->get_iter(path);
         row[users.get_columns().ID] = temp_ID;
         if (edit_ID != 0)
-            row = *(users.get_selection()->get_selected());
+            row = *users.get_model()->get_iter(path);
         row[users.get_columns().birthday_month] = temp_month;
         if (edit_ID != 0)
-            row = *(users.get_selection()->get_selected());
+            row = *users.get_model()->get_iter(path);
         row[users.get_columns().birthday_day] = temp_day;
         if (edit_ID != 0)
-            row = *(users.get_selection()->get_selected());
+            row = *users.get_model()->get_iter(path);
         row[users.get_columns().introduction] = temp_intro;
         if (edit_ID != 0)
-            row = *(users.get_selection()->get_selected());
+            row = *users.get_model()->get_iter(path);
         row[users.get_columns().review] = temp_review;
+        if (edit_ID != 0)
+            row = *users.get_model()->get_iter(path);
+        row[users.get_columns().username] = temp_username;
 
         //tells the user (by changing the app title) that he needs to save the file
         win.change_title(false);

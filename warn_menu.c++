@@ -43,8 +43,16 @@ warn_menu::warn_menu(window &win) : assistant(win)
 void warn_menu::on_add_warn(window &win)
 {
     //tells the on_assistant_apply() that we're in add mode and launch the assistant
-    edit_ID = 0;
-    assistant.launch_assistant(win);
+    if (win.get_user_list().get_model()->children().size() != 0)
+    {
+        edit_ID = 0;
+        assistant.launch_assistant(win);
+    }
+    else
+    {
+        dialog::error_dialog(win, "no users to add warns",
+                             "please add a user before adding a warn");
+    }
 }
 
 void warn_menu::on_edit_warn(window &win, warn_list &warns)
