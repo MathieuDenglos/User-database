@@ -4,8 +4,10 @@
 
 int main(int argc, char *argv[])
 {
-    //Set the environment variable for Gtk to not show any window decoration
+//Set the environment variable for Gtk to not show any window decoration
+#ifdef _WIN32
     putenv("GTK_CSD=0");
+#endif
 
     //Create the application
     Glib::RefPtr<toolbar> application = toolbar::create();

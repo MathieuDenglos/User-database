@@ -14,10 +14,10 @@ void dialog::error_dialog(window &win, std::string main, std::string secondary)
 
 void dialog::about_dialog(window &win)
 {
-    Gtk::MessageDialog about_dialog("Programm made by @Argo#9540", false,
+    Gtk::MessageDialog about_dialog("Program made by Mathieu Denglos", false,
                                     Gtk::MESSAGE_INFO, Gtk::BUTTONS_OK);
     about_dialog.set_transient_for(win);
-    about_dialog.set_secondary_text("Contact me over discord if help is needed");
+    about_dialog.set_secondary_text("Contact me on Linkedin if help is needed");
     about_dialog.run();
 }
 
