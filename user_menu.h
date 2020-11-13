@@ -17,7 +17,7 @@ private:
     long long edit_ID;
 
     //Different signal handlers for the elements of the menu
-    void on_search_user(user_list &users);
+    void on_search_user(window &win, user_list &users);
     void on_add_user();
     void on_edit_user(window &win, user_list &users);
     void on_remove_user(user_list &users, window &win);

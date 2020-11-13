@@ -66,6 +66,8 @@ void toolbar::on_startup()
                sigc::mem_fun(*this, &toolbar::on_open_file));
     add_action("about",
                sigc::mem_fun(*this, &toolbar::on_about));
+    add_action("newfile",
+               sigc::mem_fun(*this, &toolbar::on_new_file));
 }
 
 void toolbar::on_activate()
@@ -101,24 +103,32 @@ void toolbar::on_open_file()
 {
     //Call the file_opener method first to grab the data from a file
     //Then change the visibility settings depending on if users/warns/a file got added
-    std::array<bool, 3> visibility = files.file_opener(*win);
+    bool visibility = files.file_opener(*win);
     visibility_settings(visibility);
+}
+
+void toolbar::on_new_file()
+{
+    visibility_settings(true);
 }
 
 void toolbar::on_add_file()
 {
     //Call the file_opener method first to grab the data from a file
     //Then change the visibility settings depending on if users/warns/a file got added
-    std::array<bool, 3> visibility = files.file_opener(*win);
+    bool visibility = files.file_opener(*win);
     visibility_settings(visibility);
 }
 
-void toolbar::visibility_settings(std::array<bool, 3> visibility)
+void toolbar::visibility_settings(bool visibility)
 {
-    //If the userlist got its first element : Make the treeview appear to the user,
-    //activate the elements of the userlist section of the toolbar
-    if (visibility[0])
+    //If the list got its first element : Make the treeview appear to the user,
+    //activate the elements of the userlist and warnlist section of the toolbar
+    //Make all the menu options visible
+    //Ask if the user want to turn on autosave mode
+    if (visibility)
     {
+        //First activate all the menu options for the userlist
         toolbar_user_list = add_action_bool("showuserlist",
                                             sigc::mem_fun(*this, &toolbar::on_show_user_list), true);
         toolbar_tag = add_action_bool("tag",
@@ -130,26 +140,17 @@ void toolbar::visibility_settings(std::array<bool, 3> visibility)
         toolbar_other = add_action_bool("other",
                                         sigc::mem_fun(*this, &toolbar::on_other), true);
 
-        //This process is in two steps : first we had the column, then we show it
-        win->set_user_visibility(true);
-    }
-
-    //If the warnlist got its first element : Make the treeview appear to the user,
-    //activate the elements of the warnlist section of the toolbar
-    if (visibility[1])
-    {
+        //Then activate all the menu options for the warnlist
         toolbar_warn_list = add_action_bool("showwarnlist",
                                             sigc::mem_fun(*this, &toolbar::on_show_warn_list), true);
         toolbar_reason = add_action_bool("reason",
                                          sigc::mem_fun(*this, &toolbar::on_reason), true);
 
-        //This process is in two steps : first we had the column, then we show
+        //Finish by showing everything to the user
+        win->set_user_visibility(true);
         win->set_warn_visibility(true);
-    }
 
-    //If it is the first file opened, add the save option, the add file and remove the open file
-    if (visibility[2])
-    {
+        //add the save option, the add file and remove the open file and blank file option
         add_action("savefile", sigc::bind<bool>(
                                    sigc::mem_fun(*this, &toolbar::on_save_file), false));
         add_action("savefileas", sigc::bind<bool>(
@@ -159,6 +160,7 @@ void toolbar::visibility_settings(std::array<bool, 3> visibility)
         add_action("birthdaylist",
                    sigc::mem_fun(*this, &toolbar::on_show_birthday));
         remove_action("openfile");
+        remove_action("newfile");
     }
 }
 

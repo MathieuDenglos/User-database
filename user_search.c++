@@ -326,7 +326,7 @@ void user_search::on_search(user_list &users, warn_list &warns)
     }
 
     //change the size of the search window so the information fits nicely
-    set_size_request(420, 200 +
+    set_size_request(420, 224 +
                               40 * no_users_label.is_visible() +
                               (32 * (users_visible_model->children().size() + 1) * (users_visible_model->children().size() < 8) +
                                280 * (users_visible_model->children().size() >= 8)) *
@@ -402,6 +402,7 @@ void user_search::launch_search()
 {
     //reset all the values and show the window
     set_size_request(420, 200);
+    set_border_width(12);
     search_type.set_active(0);
     on_type_changed();
     //username

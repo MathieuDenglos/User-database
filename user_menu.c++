@@ -10,8 +10,8 @@ user_menu::user_menu(window &win) : assistant(win), search(win)
     Gtk::MenuItem *item;
 
     item = Gtk::manage(new Gtk::MenuItem("_Search user", true));
-    item->signal_activate().connect(sigc::bind<user_list &>(sigc::mem_fun(*this, &user_menu::on_search_user),
-                                                            win.get_user_list()));
+    item->signal_activate().connect(sigc::bind<window &, user_list &>(sigc::mem_fun(*this, &user_menu::on_search_user),
+                                                                      win, win.get_user_list()));
     append(*item);
 
     item = Gtk::manage(new Gtk::MenuItem("_Add user", true));
@@ -42,10 +42,14 @@ user_menu::user_menu(window &win) : assistant(win), search(win)
     show_all();
 }
 
-void user_menu::on_search_user(user_list &users)
+void user_menu::on_search_user(window &win, user_list &users)
 {
-    //launch the search window
-    search.launch_search();
+    //launch the search window if there are something to search
+    if (users.get_model()->children().size() != 0)
+        search.launch_search();
+    else
+        dialog::error_dialog(win, "No users in the userlist",
+                             "No needs to search for anything");
 }
 
 void user_menu::on_edit_user(window &win, user_list &users)

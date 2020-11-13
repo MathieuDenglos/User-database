@@ -6,14 +6,9 @@
 #include <sstream>
 #include <iomanip>
 
-std::array<bool, 3> file::file_opener(window &win)
+bool file::file_opener(window &win)
 {
-    //This array will return to the toolbar class what functions of the toolbar to activate.
-    //First element describe the information related to the user treeview
-    //Second element describe the information related to the warn treeview
-    //Third element describe if the added file is the first one to be added
-    std::array<bool, 3> toolbar_visibility = {false, false, false};
-
+    //This program will return true if it is the first opened somewhat correctly
     //Grab the filename using the Gtk::FileChooserDialog, and open the selected text file
     std::string file_path;
     file_path = dialog::open_file_dialog(win);
@@ -26,8 +21,9 @@ std::array<bool, 3> file::file_opener(window &win)
         {
             //If it doesn't detect any files, even after the users selection, show the error message
             dialog::error_dialog(win, "Error while loading the file",
-                                 "Couldn't find the selected file");
+                                 "Couldn't find the selected file, please select a valid file or create a new list");
         }
+        return false;
     }
     else
     {
@@ -39,15 +35,26 @@ std::array<bool, 3> file::file_opener(window &win)
             std::getline(file, line);
         if (line != "─────────────────────────────────────────────────────────────────────────────────────────────────────")
         {
-            //If not of the correct format, show a Gtk::MessageDialog in error mode stating the issue
-            dialog::error_dialog(win, "This file doesn't have the right format",
-                                 "Please select a file with the correct format");
+            //If not of the correct format, show a Gtk::MessageDialog in error mode stating the issue, and create a new blank list if it's the first file
+            if (files_path.size() == 0)
+            {
+                dialog::error_dialog(win, "This file doesn't have the right format",
+                                     "Please select a file with the correct format, a new blank list is created");
+                return true;
+            }
+            else
+            {
+                dialog::error_dialog(win, "This file doesn't have the right format",
+                                     "Please select a file with the correct format");
+                return false;
+            }
         }
         else if (verify_file(file_path))
         {
             //If the file already got opened, show a Gtk::MessageDialog in error mode stating the issue
             dialog::error_dialog(win, "This file was already opened previously",
                                  "No data to grab, try opening another file");
+            return false;
         }
         else
         {
@@ -65,10 +72,6 @@ std::array<bool, 3> file::file_opener(window &win)
             information.str(line);
             information >> temp;
             information >> add_users;
-
-            //If it's the first time that a user get added, set the firt value of the array to true
-            if (add_users != 0 && win.get_user_list().get_model()->children().size() == 0)
-                toolbar_visibility[0] = true;
 
             //Skip the next 2 lines, only here for readability
             for (int i = 0; i < 2; i++)
@@ -90,10 +93,6 @@ std::array<bool, 3> file::file_opener(window &win)
             information >> temp;
             information >> add_warns;
 
-            //If it's the first time that a warn get added, set the second value of the array to true
-            if (add_warns != 0 && win.get_warn_list().get_model()->children().size() == 0)
-                toolbar_visibility[1] = true;
-
             //Skip the next 2 lines, only here for readability
             for (int i = 0; i < 2; i++)
                 std::getline(file, line);
@@ -105,19 +104,24 @@ std::array<bool, 3> file::file_opener(window &win)
                 win.get_warn_list().grab_data(line, win.get_user_list());
             }
 
-            //If data got detected and potentially added, save the filepath to a vector
-            if (add_users > 0 || add_warns > 0)
-                files_path.push_back(file_path);
+            //adds the file to the files list and close it
+            files_path.push_back(file_path);
             file.close();
-            //If it's the first file opened, set tge tgurd vakye if the array to true
-            if (files_path.size() == 1)
-                toolbar_visibility[2] = true;
 
             //tells the user that the file isn't saved yet
             win.change_title(false);
+
+            if (files_path.size() == 1)
+            {
+                if (add_users != 0 && win.get_user_list().get_model()->children().size() == 0)
+                    dialog::error_dialog(win, "This file is empty",
+                                         "opening a new list");
+                return true;
+            }
+            else
+                return false;
         }
     }
-    return toolbar_visibility;
 }
 
 void file::file_saver(window &win, bool saveas)

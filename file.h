@@ -3,7 +3,6 @@
 
 #include <string>
 #include <vector>
-#include <array>
 
 class window;
 
@@ -21,7 +20,7 @@ private:
 
 public:
     //Methods called by the signal handlers in order to open a file and
-    std::array<bool, 3> file_opener(window &win);
+    bool file_opener(window &win);
     void file_saver(window &win, bool saveas);
 };
 

@@ -4,9 +4,14 @@
             <attribute name='label' translatable='yes'>_File</attribute>
             <section>
                 <item>
-                    <attribute name='label' translatable='yes'>_Open file</attribute>
+                    <attribute name='label' translatable='yes'>_New list from file</attribute>
                     <attribute name='action'>app.openfile</attribute>
                     <attribute name='accel'>&lt;Primary&gt;o</attribute>
+                </item>
+                <item>
+                    <attribute name='label' translatable='yes'>_New blank list</attribute>
+                    <attribute name='action'>app.newfile</attribute>
+                    <attribute name='accel'>&lt;Primary&gt;n</attribute>
                 </item>
                 <item>
                     <attribute name='label' translatable='yes'>_Add file</attribute>

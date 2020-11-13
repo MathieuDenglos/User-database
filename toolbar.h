@@ -5,7 +5,6 @@
 #include "file.h"
 
 #include <gtkmm.h>
-
 #include <array>
 
 class toolbar : public Gtk::Application
@@ -29,7 +28,8 @@ protected:
     //everything related to the file section
     void on_open_file();
     void on_add_file();
-    void visibility_settings(std::array<bool, 3> visibility);
+    void on_new_file();
+    void visibility_settings(bool visibility);
     void on_save_file(bool saveas);
     file files;
 
