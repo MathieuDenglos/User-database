@@ -17,11 +17,6 @@ const std::map<std::string, int> months::months_map = {{"JANUARY", 1},
                                                        {"NOVEMBER", 11},
                                                        {"DECEMBER", 12}};
 
-const std::map<std::string, int>& months::get_map()
-{
-    return months_map;
-}
-
 const std::pair<int, int> months::get_date()
 {
     //grab the actual time of the system
@@ -91,14 +86,4 @@ months::months()
     row[months_columns.days] = 31;
 
     pack_start(months_columns.month);
-}
-
-Glib::RefPtr<Gtk::ListStore> &months::get_model()
-{
-    return months_model;
-}
-
-months::columns &months::get_months_columns()
-{
-    return months_columns;
 }

@@ -1,6 +1,6 @@
 ifeq ($(OS), win)
 	TOOLCHAIN := x86_64-w64-mingw32.shared-
-	TERMINAL := -mwindows
+	TERMINAL := #-mwindows
 	APP := userdatabase.exe
 else
 	TOOLCHAIN :=

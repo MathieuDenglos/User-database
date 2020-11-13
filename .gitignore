@@ -1,5 +1,6 @@
 .vscode/
 userdatabase.exe
 userdatabase
+ND.txt
 *.o
 *.d

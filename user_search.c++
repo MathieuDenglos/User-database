@@ -409,7 +409,7 @@ void user_search::launch_search()
     //ID
     ID_entry.set_text("0");
     //birthday
-    month_combo.set_active(months::get_date().first - 1);
+    month_combo.set_active(months::get_date().first);
     on_month_changed();
     day_adjustment->set_value(months::get_date().second);
     month_check.set_active(true);

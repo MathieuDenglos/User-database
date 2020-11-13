@@ -171,14 +171,14 @@ void user_assistant::launch_assistant(std::string username /*= ""*/,
         set_title("add user");
         for (int i = 0; i < birthday_month.size(); i++)
             birthday_month[i] -= 32 * (birthday_month[i] >= 97 && birthday_month[i] <= 122);
-        month_combo.set_active(months::get_map().at(birthday_month) - 1);
+        month_combo.set_active(months::months_map.at(birthday_month) - 1);
         day_adjustment->set_value(birthday_day);
     }
     else
     {
         set_title("edit user");
-        month_combo.set_active(months::get_date().first - 1);
-        day_adjustment->set_value(months::get_date().first);
+        month_combo.set_active(months::get_date().first);
+        day_adjustment->set_value(months::get_date().second);
     }
 
     //set the state for the introduction and review checkbox

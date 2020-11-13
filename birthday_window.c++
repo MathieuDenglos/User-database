@@ -78,7 +78,7 @@ int birthday_window::fill_birthday_list(window &win,
             //This will later be used to sort the username by their birthdate
             temp_str = (*user_iter)[users.get_columns().birthday_month];
             std::transform(temp_str.begin(), temp_str.end(), temp_str.begin(), ::toupper);
-            rankdate = months::get_map().at(temp_str) * 100 + (*user_iter)[users.get_columns().birthday_day];
+            rankdate = months::months_map.at(temp_str) * 100 + (*user_iter)[users.get_columns().birthday_day];
 
             if (rankdate <= 1231 || rankdate <= 0101)
             {

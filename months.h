@@ -10,10 +10,6 @@
 class months : public Gtk::ComboBox
 {
 private:
-    //map used to convert the month (std::string) to a interger (int) from 1 to 12
-    //This map is used to create the rankdate and sort users by their birthday
-    static const std::map<std::string, int> months_map;
-
     //create the month columns with all the months, and the number of day they have
     //this is used for a combobox to select the birth month
     class columns : public Gtk::TreeModel::ColumnRecord
@@ -35,11 +31,13 @@ public:
     //constructor
     months();
 
-    //getters for the map and the model and the columns
-    static const std::map<std::string, int> &get_map();
+    //map used to convert the month (std::string) to a interger (int) from 1 to 12
+    //This map is used to create the rankdate and sort users by their birthday
+    static const std::map<std::string, int> months_map;
+
+    //getters for the date and the model and colums
     static const std::pair<int, int> get_date();
-    Glib::RefPtr<Gtk::ListStore> &get_model();
-    columns &get_months_columns();
+    const columns &get_months_columns() const { return months_columns; }
 };
 
 #endif //MONTHS_H
