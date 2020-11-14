@@ -58,7 +58,7 @@ std::string dialog::open_file_dialog(window &win)
     if (result == Gtk::RESPONSE_OK)
         return open_dialog.get_filename();
     else
-        return "ND";
+        throw ERROR(ERROR::CANCEL);
 }
 
 std::string dialog::save_file_dialog(window &win)
@@ -81,5 +81,5 @@ std::string dialog::save_file_dialog(window &win)
     if (result == Gtk::RESPONSE_OK)
         return save_dialog.get_filename();
     else
-        return "ND";
+        throw ERROR(ERROR::CANCEL);
 }

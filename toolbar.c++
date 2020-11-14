@@ -35,10 +35,7 @@ void toolbar::on_startup()
 
     //If the file is not detected
     if (!file.is_open())
-    {
-        dialog::error_dialog(*win, "Couldn't build the tool bar",
-                             "toolbar-ui.xml is unfindable");
-    }
+        std::cerr << "couldn't find toolbar-ui.xml\n";
 
     std::stringstream buffer;
     buffer << file.rdbuf();
@@ -51,7 +48,6 @@ void toolbar::on_startup()
     }
     catch (const Glib::Error &ex)
     {
-        //Can't show the error dialog dialog yet (win* not created yet)
         std::cerr << "couldn't make the toolbar" << ex.what() << std::endl;
     }
 

@@ -9,24 +9,13 @@
 bool file::file_opener(window &win)
 {
     //This program will return true if it is the first opened somewhat correctly
-    //Grab the filename using the Gtk::FileChooserDialog, and open the selected text file
-    std::string file_path;
-    file_path = dialog::open_file_dialog(win);
-    std::ifstream file(file_path);
 
-    //First lets verify if the file is opened.
-    if (!file.is_open())
+    //Tries to grab and open the file
+    try
     {
-        if (file_path != "ND")
-        {
-            //If it doesn't detect any files, even after the users selection, show the error message
-            dialog::error_dialog(win, "Error while loading the file",
-                                 "Couldn't find the selected file, please select a valid file or create a new list");
-        }
-        return false;
-    }
-    else
-    {
+        std::string file_path = dialog::open_file_dialog(win);
+        std::ifstream file(file_path);
+
         //verify if the file have the correct format by comparing the third line
         //This verification is used in order to prevent biased data from entering
         //Note that this system is not flawless, however for our use it's going to be enough
@@ -122,49 +111,37 @@ bool file::file_opener(window &win)
                 return false;
         }
     }
+    catch (const ERROR &CANCEL)
+    {
+        return false;
+    }
 }
 
 void file::file_saver(window &win, bool saveas)
 {
     //Grab the filename using the Gtk::FileChooserDialog, and open/create the text file, to save data in the file
-    std::string file_path;
-    file_path = (!saveas && is_output_file()) ? output_file : dialog::save_file_dialog(win);
-    std::ofstream file(file_path);
+    try
+    {
+        std::string file_path = (!saveas && is_output_file()) ? output_file : dialog::save_file_dialog(win);
+        std::ofstream file(file_path);
 
-    //First lets verify if the file is open.
-    if (!file.is_open())
-    {
-        if (file_path != "ND")
-        {
-            //If it doesn't detect any files, even after the users selection (file_name != "ND")
-            dialog::error_dialog(win, "Error creating the file",
-                                 "Please try again");
-        }
-    }
-    else
-    {
         //If the file is open, we will now save the file with the correct format
         std::string line;
 
         //Clear the file
         file.clear();
 
-        //Add the presentation to the file (vital in for the file to be opened another time and for lisibility)
-        file << "───────────────────────────────────────────  " << std::setw(3) << std::right << std::setfill('0') << win.get_user_list().get_model()->children().size() << " members  ───────────────────────────────────────────" << std::endl;
-        file << "Username                          tag  ID       birthday : Month     Day  Intro  Review  warns   " << std::endl;
-        file << "─────────────────────────────────────────────────────────────────────────────────────────────────────" << std::endl;
+        ////Save the userlist first by adding a presentation and then by putting the user_list
+        file << "───────────────────────────────────────────  " << std::setw(3) << std::right << std::setfill('0') << win.get_user_list().get_model()->children().size() << " members  ───────────────────────────────────────────\n"
+             << "Username                          tag  ID       birthday : Month     Day  Intro  Review  warns   \n"
+             << "─────────────────────────────────────────────────────────────────────────────────────────────────────\n"
+             << win.get_user_list().save_user_list(win.get_warn_list()) << '\n';
 
-        //Now create a long string with all the user information
-        //The vector of long long is used to store all ID of the warns, to count the amount of warn of each users
-        file << win.get_user_list().save_user_list(win.get_warn_list()) << std::endl;
-
-        //Adding presentation again for lisibility
-        file << "──────────────────────────────  " << std::setw(3) << std::right << std::setfill('0') << win.get_warn_list().get_model()->children().size() << " warns  ─────────────────────────────" << std::endl;
-        file << "WarnID  Username                          ID                   Reason   " << std::endl;
-        file << "────────────────────────────────────────────────────────────────────────" << std::endl;
-
-        //Create a long string with all the warn data
-        file << win.get_warn_list().save_warn_list() << std::endl;
+        //Save the warnlist first by adding a presenting and then by putting the warn_list
+        file << "──────────────────────────────  " << std::setw(3) << std::right << std::setfill('0') << win.get_warn_list().get_model()->children().size() << " warns  ─────────────────────────────\n"
+             << "WarnID  Username                          ID                   Reason   \n"
+             << "────────────────────────────────────────────────────────────────────────\n"
+             << win.get_warn_list().save_warn_list() << '\n';
 
         //If the file was never opened before, add it to the files_path vector
         if (!verify_file(file_path))
@@ -177,6 +154,9 @@ void file::file_saver(window &win, bool saveas)
 
         //Tells the user that the file is saved
         win.change_title(true);
+    }
+    catch (const ERROR &CANCEL)
+    {
     }
 }
 
@@ -191,22 +171,17 @@ void file::auto_saver(window &win)
     //Clear the file
     file.clear();
 
-    //Add the presentation to the file (vital in for the file to be opened another time and for lisibility)
-    file << "───────────────────────────────────────────  " << std::setw(3) << std::right << std::setfill('0') << win.get_user_list().get_model()->children().size() << " members  ───────────────────────────────────────────" << std::endl;
-    file << "Username                          tag  ID       birthday : Month     Day  Intro  Review  warns   " << std::endl;
-    file << "─────────────────────────────────────────────────────────────────────────────────────────────────────" << std::endl;
+    //Save the userlist first by adding a presentation and then by putting the user_list
+    file << "───────────────────────────────────────────  " << std::setw(3) << std::right << std::setfill('0') << win.get_user_list().get_model()->children().size() << " members  ─────────────────────────────────────────── \n"
+         << "Username                          tag  ID       birthday : Month     Day  Intro  Review  warns   \n"
+         << "─────────────────────────────────────────────────────────────────────────────────────────────────────\n"
+         << win.get_user_list().save_user_list(win.get_warn_list()) << '\n';
 
-    //Now create a long string with all the user information
-    //The vector of long long is used to store all ID of the warns, to count the amount of warn of each users
-    file << win.get_user_list().save_user_list(win.get_warn_list()) << std::endl;
-
-    //Adding presentation again for lisibility
-    file << "──────────────────────────────  " << std::setw(3) << std::right << std::setfill('0') << win.get_warn_list().get_model()->children().size() << " warns  ─────────────────────────────" << std::endl;
-    file << "WarnID  Username                          ID                   Reason   " << std::endl;
-    file << "────────────────────────────────────────────────────────────────────────" << std::endl;
-
-    //Create a long string with all the warn data
-    file << win.get_warn_list().save_warn_list() << std::endl;
+    //Save the warnlist first by adding a presenting and then by putting the warn_list
+    file << "──────────────────────────────  " << std::setw(3) << std::right << std::setfill('0') << win.get_warn_list().get_model()->children().size() << " warns  ─────────────────────────────\n"
+         << "WarnID  Username                          ID                   Reason   \n"
+         << "────────────────────────────────────────────────────────────────────────\n"
+         << win.get_warn_list().save_warn_list() << '\n';
 
     file.close();
 }
