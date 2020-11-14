@@ -9,7 +9,6 @@
 #include <gtkmm/button.h>
 #include <gtkmm/label.h>
 #include <vector>
-#include <string>
 
 class window;
 class user_list;
@@ -26,21 +25,16 @@ private:
     //Element needed to store the datas about the users
     std::vector<birthday_list> birthdays;
 
-    //Method to grab all the users which gave their birthday and fill the vector birthdays
-    int fill_birthday_list(window &win, user_list &users);
-
-    //Method to grab all the data and convert it to a string
-    std::string convert_data(int max_lenght);
-
     //Signal handlers
-    void on_close();
+    void on_close() { hide(); }
 
 public:
     //Constructor
     birthday_window(window &win);
 
-    //Method to show the window
-    void show_birthday_window(window &win, user_list &users);
+    //Method to create the birthday_list with a user_list and show it on a separate window
+    void show_birthday_window(window &win,
+                              user_list &users);
 };
 
 #endif //BIRTHDAY_WINDOW_H
