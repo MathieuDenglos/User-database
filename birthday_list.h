@@ -23,7 +23,7 @@ public:
     static int max_lenght;
 
     //getter for the rankdate : for the sort
-    [[nodiscard]] constexpr const int get_rankdate_const() const noexcept { return this->rankdate; }
+    [[nodiscard]] const int get_rankdate_const() const noexcept { return this->rankdate; }
 
     //operator overload to convert a user's data into a stringstream
     friend std::stringstream &operator<<(std::stringstream &, const birthday_list &);

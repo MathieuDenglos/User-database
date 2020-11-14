@@ -28,10 +28,15 @@ private:
     void on_assistant_apply(window &win, warn_list &warns);
 
 public:
+    //constructor
     warn_menu(window &win);
-    long long &get_edited_ID();
-    warn_assistant &get_assistant();
+
+    //method called when the assistant is closed
     void on_assistant_cancel();
+
+    //getters
+    [[nodiscard]] long long &get_edited_ID() noexcept { return edit_ID; }
+    [[nodiscard]] warn_assistant &get_assistant() noexcept { return assistant; }
 };
 
 #endif //WARN_MENU_H

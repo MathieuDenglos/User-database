@@ -44,9 +44,9 @@ public:
     void change_title(bool saved);
 
     //Getters functions for the warnlist and userlist
-    warn_list &get_warn_list();
-    user_list &get_user_list();
-    birthday_window &get_birthday_window();
+    [[nodiscard]] user_list &get_user_list() noexcept { return users; }
+    [[nodiscard]] warn_list &get_warn_list() noexcept { return warns; }
+    [[nodiscard]] birthday_window &get_birthday_window() noexcept { return birthdays; }
 
     //bool that saves the state of the automatic save
     bool auto_save_mode_on;

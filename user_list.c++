@@ -218,13 +218,3 @@ void user_list::change_visibility(USER_DATA visibility, std::array<bool, 4> stat
         }
     }
 }
-
-user_columns &user_list::get_columns()
-{
-    return u_columns;
-}
-
-Glib::RefPtr<Gtk::ListStore> &user_list::get_model()
-{
-    return user_model;
-}

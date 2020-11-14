@@ -94,18 +94,3 @@ void window::change_title(bool saved)
     else if (!saved)
         set_title("User database (unsaved)");
 }
-
-user_list &window::get_user_list()
-{
-    return users;
-}
-
-warn_list &window::get_warn_list()
-{
-    return warns;
-}
-
-birthday_window &window::get_birthday_window()
-{
-    return birthdays;
-}

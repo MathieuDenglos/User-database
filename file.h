@@ -25,7 +25,7 @@ public:
     static void auto_saver(window &win);
 
     //getters and setters
-    [[nodiscars]] constexpr const bool is_output_file() const noexcept { return !output_file.empty(); }
+    [[nodiscard]] constexpr const bool is_output_file() const noexcept { return !output_file.empty(); }
 };
 
 #endif //FILE_H

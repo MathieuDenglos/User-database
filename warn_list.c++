@@ -147,13 +147,3 @@ void warn_list::change_visibility()
     else
         append_column("reason", w_columns.reason);
 }
-
-warn_columns &warn_list::get_columns()
-{
-    return w_columns;
-}
-
-Glib::RefPtr<Gtk::ListStore> &warn_list::get_model()
-{
-    return warn_model;
-}

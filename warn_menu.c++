@@ -91,7 +91,10 @@ void warn_menu::on_remove_warn(window &win, warn_list &warns)
             iter++;
 
         if (iter != warns.get_model()->children().end())
+        {
             warns.get_model()->erase(iter);
+            win.change_title(false);
+        }
     }
     else
         dialog::error_dialog(win, "no warns to remove",
@@ -141,6 +144,7 @@ void warn_menu::on_assistant_apply(window &win, warn_list &warns)
         if (edit_ID != 0)
             row = *(warns.get_selection()->get_selected());
         row[warns.get_columns().reason] = temp_reason;
+        win.change_title(false);
     }
     else if (edit_ID != 0)
     {
@@ -159,14 +163,4 @@ void warn_menu::on_assistant_cancel()
 {
     edit_ID = 0;
     assistant.hide();
-}
-
-long long &warn_menu::get_edited_ID()
-{
-    return edit_ID;
-}
-
-warn_assistant &warn_menu::get_assistant()
-{
-    return assistant;
 }

@@ -47,8 +47,8 @@ public:
     void change_visibility(USER_DATA visibility, std::array<bool, 4> status, bool add);
 
     //getters
-    user_columns &get_columns();
-    Glib::RefPtr<Gtk::ListStore> &get_model();
+    [[nodiscard]] user_columns &get_columns() noexcept { return u_columns; }
+    [[nodiscard]] Glib::RefPtr<Gtk::ListStore> &get_model() noexcept { return user_model; }
 };
 
 #endif //USER_DATATREEVIEW_H

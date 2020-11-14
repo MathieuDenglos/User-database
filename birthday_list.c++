@@ -18,4 +18,5 @@ std::stringstream &operator<<(std::stringstream &stream, const birthday_list &us
     stream << std::setw(birthday_list::max_lenght) << std::left << std::setfill(' ') << user.username << " : "
            << std::setw(2) << std::right << std::setfill('0') << user.birthday_day << " "
            << std::left << user.birthday_month << std::endl;
+    return stream;
 }

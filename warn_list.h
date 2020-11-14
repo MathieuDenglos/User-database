@@ -38,8 +38,8 @@ public:
     void change_visibility();
 
     //getters
-    warn_columns &get_columns();
-    Glib::RefPtr<Gtk::ListStore> &get_model();
+    [[nodiscard]] warn_columns &get_columns() noexcept { return w_columns; }
+    [[nodiscard]] Glib::RefPtr<Gtk::ListStore> &get_model() noexcept { return warn_model; }
 };
 
 #endif //WARNTREEVIEW_H
