@@ -22,6 +22,10 @@ public:
     //Methods called by the signal handlers in order to open a file and
     bool file_opener(window &win);
     void file_saver(window &win, bool saveas);
+    static void auto_saver(window &win);
+
+    //getters and setters
+    bool is_output_file() { return !output_file.empty(); }
 };
 
 #endif //FILE_H

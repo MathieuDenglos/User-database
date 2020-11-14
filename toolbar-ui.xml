@@ -27,6 +27,10 @@
                     <attribute name='action'>app.savefileas</attribute>
                     <attribute name='accel'>&lt;Primary&gt;f</attribute>
                 </item>
+                <item>
+                    <attribute name='label' translatable='yes'>_Auto save mode</attribute>
+                    <attribute name='action'>app.autosave</attribute>
+                </item>
             </section>
         </submenu>
         <submenu>

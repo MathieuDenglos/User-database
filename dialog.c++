@@ -21,6 +21,20 @@ void dialog::about_dialog(window &win)
     about_dialog.run();
 }
 
+bool dialog::auto_save_dialog(window &win)
+{
+    Gtk::MessageDialog error_dialog("Do you want to activate auto save mode", false,
+                                    Gtk::MESSAGE_INFO, Gtk::BUTTONS_YES_NO);
+    error_dialog.set_transient_for(win);
+    error_dialog.set_secondary_text("This can still be activated later");
+    const int result = error_dialog.run();
+
+    if (result == Gtk::RESPONSE_YES)
+        return true;
+    else
+        return false;
+}
+
 std::string dialog::open_file_dialog(window &win)
 {
     //Create the file chooser dialog in open mode

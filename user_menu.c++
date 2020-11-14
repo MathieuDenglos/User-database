@@ -6,6 +6,7 @@
 
 user_menu::user_menu(window &win) : assistant(win), search(win)
 {
+
     //creates all the items of the menu and add them to the menu
     Gtk::MenuItem *item;
 
@@ -24,8 +25,8 @@ user_menu::user_menu(window &win) : assistant(win), search(win)
     append(*item);
 
     item = Gtk::manage(new Gtk::MenuItem("_Remove user", true));
-    item->signal_activate().connect(sigc::bind<user_list &, window &>(sigc::mem_fun(*this, &user_menu::on_remove_user),
-                                                                      win.get_user_list(), win));
+    item->signal_activate().connect(sigc::bind<window &, user_list &>(sigc::mem_fun(*this, &user_menu::on_remove_user),
+                                                                      win, win.get_user_list()));
     append(*item);
 
     //make the menu accessible only from the user treeview
@@ -79,7 +80,7 @@ void user_menu::on_add_user()
     assistant.launch_assistant();
 }
 
-void user_menu::on_remove_user(user_list &users, window &win)
+void user_menu::on_remove_user(window &win, user_list &users)
 {
     if (users.get_model()->children().size() != 0)
     {

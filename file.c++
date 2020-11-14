@@ -128,7 +128,7 @@ void file::file_saver(window &win, bool saveas)
 {
     //Grab the filename using the Gtk::FileChooserDialog, and open/create the text file, to save data in the file
     std::string file_path;
-    file_path = (!saveas && output_file.size() != 0) ? output_file : dialog::save_file_dialog(win);
+    file_path = (!saveas && is_output_file()) ? output_file : dialog::save_file_dialog(win);
     std::ofstream file(file_path);
 
     //First lets verify if the file is open.
@@ -171,12 +171,44 @@ void file::file_saver(window &win, bool saveas)
             files_path.push_back(file_path);
 
         output_file = file_path;
+        win.output_file = file_path;
 
         file.close();
 
         //Tells the user that the file is saved
         win.change_title(true);
     }
+}
+
+void file::auto_saver(window &win)
+{
+    //Grab the filename using the Gtk::FileChooserDialog, and open/create the text file, to save data in the file
+    std::ofstream file(win.output_file);
+
+    //If the file is open, we will now save the file with the correct format
+    std::string line;
+
+    //Clear the file
+    file.clear();
+
+    //Add the presentation to the file (vital in for the file to be opened another time and for lisibility)
+    file << "───────────────────────────────────────────  " << std::setw(3) << std::right << std::setfill('0') << win.get_user_list().get_model()->children().size() << " members  ───────────────────────────────────────────" << std::endl;
+    file << "Username                          tag  ID       birthday : Month     Day  Intro  Review  warns   " << std::endl;
+    file << "─────────────────────────────────────────────────────────────────────────────────────────────────────" << std::endl;
+
+    //Now create a long string with all the user information
+    //The vector of long long is used to store all ID of the warns, to count the amount of warn of each users
+    file << win.get_user_list().save_user_list(win.get_warn_list()) << std::endl;
+
+    //Adding presentation again for lisibility
+    file << "──────────────────────────────  " << std::setw(3) << std::right << std::setfill('0') << win.get_warn_list().get_model()->children().size() << " warns  ─────────────────────────────" << std::endl;
+    file << "WarnID  Username                          ID                   Reason   " << std::endl;
+    file << "────────────────────────────────────────────────────────────────────────" << std::endl;
+
+    //Create a long string with all the warn data
+    file << win.get_warn_list().save_warn_list() << std::endl;
+
+    file.close();
 }
 
 bool file::verify_file(std::string file_path)

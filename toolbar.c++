@@ -159,8 +159,18 @@ void toolbar::visibility_settings(bool visibility)
                    sigc::mem_fun(*this, &toolbar::on_add_file));
         add_action("birthdaylist",
                    sigc::mem_fun(*this, &toolbar::on_show_birthday));
+        auto_save = add_action_bool("autosave",
+                                    sigc::mem_fun(*this, &toolbar::on_auto_save), false);
         remove_action("openfile");
         remove_action("newfile");
+
+        //Ask the user whether they want to activate auto save
+        if (dialog::auto_save_dialog(*win))
+        {
+            files.file_saver(*win, false);
+            auto_save->change_state(files.is_output_file());
+            win->auto_save_mode_on = files.is_output_file();
+        }
     }
 }
 
@@ -168,6 +178,18 @@ void toolbar::on_save_file(bool saveas)
 {
     //A signal handler used to save the file
     files.file_saver(*win, saveas);
+}
+
+void toolbar::on_auto_save()
+{
+    //gets the current states, verify if an output files already exist, if not open the file saver dialog
+    //invert the status, except if the chosen output file wasn't correct
+    bool state = false;
+    toolbar_tag->get_state(state);
+    files.file_saver(*win, false);
+    state = !state;
+    toolbar_tag->change_state(state && files.is_output_file());
+    win->auto_save_mode_on = (state && files.is_output_file());
 }
 
 //User treeview visibility settings (menu bar section)

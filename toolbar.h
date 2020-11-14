@@ -29,6 +29,8 @@ protected:
     void on_open_file();
     void on_add_file();
     void on_new_file();
+    Glib::RefPtr<Gio::SimpleAction> auto_save;
+    void on_auto_save();
     void visibility_settings(bool visibility);
     void on_save_file(bool saveas);
     file files;

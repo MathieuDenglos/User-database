@@ -47,6 +47,10 @@ public:
     warn_list &get_warn_list();
     user_list &get_user_list();
     birthday_window &get_birthday_window();
+
+    //bool that saves the state of the automatic save
+    bool auto_save_mode_on;
+    std::string output_file;
 };
 
 #endif //WINDOW.H

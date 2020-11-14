@@ -1,5 +1,6 @@
 #include "window.h"
 #include "dialog.h"
+#include "file.h"
 
 window::window() : Gtk::ApplicationWindow(),
                    box(Gtk::ORIENTATION_VERTICAL, 12),
@@ -16,6 +17,7 @@ window::window() : Gtk::ApplicationWindow(),
 
                    birthdays(*this)
 {
+
     //first we'll add the user_list
     user_scrolledwindow.set_policy(Gtk::POLICY_NEVER, Gtk::POLICY_AUTOMATIC);
     user_scrolledwindow.add(users);
@@ -86,9 +88,10 @@ void window::set_warn_visibility(bool state)
 
 void window::change_title(bool saved)
 {
-    if (saved)
-        set_title("User database");
-    else
+    set_title("User database");
+    if (!saved && auto_save_mode_on)
+        file::auto_saver(*this);
+    else if (!saved)
         set_title("User database (unsaved)");
 }
 

@@ -20,7 +20,7 @@ private:
     void on_search_user(window &win, user_list &users);
     void on_add_user();
     void on_edit_user(window &win, user_list &users);
-    void on_remove_user(user_list &users, window &win);
+    void on_remove_user(window &win, user_list &users);
 
     //user_search for on_search_user() and assistant for on_add_user() and on_edit_user()
     user_search search;
