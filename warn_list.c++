@@ -133,7 +133,7 @@ std::string warn_list::save_warn_list()
          ++warn_iter)
         text << std::setw(3) << std::right << std::setfill('0') << warn_iter->get_value(w_columns.warn_ID) << "     "
              << std::setw(33) << std::left << std::setfill(' ') << warn_iter->get_value(w_columns.username) << " "
-             << std::setw(20) << std::left << std::setfill(' ') << warn_iter->get_value(w_columns.ID) << " "
+             << std::setw(19) << std::left << std::setfill('0') << warn_iter->get_value(w_columns.ID)
              << std::left << std::setfill(' ') << warn_iter->get_value(w_columns.reason) << std::endl;
 
     return text.str();

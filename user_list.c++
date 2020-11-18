@@ -106,18 +106,20 @@ std::string user_list::save_user_list(warn_list &warns)
     {
         text << std::setw(33) << std::left << std::setfill(' ') << user_iter->get_value(u_columns.username) << " "
              << std::setw(4) << std::right << std::setfill('0') << user_iter->get_value(u_columns.tag) << " "
-             << std::setw(20) << std::left << std::setfill(' ') << user_iter->get_value(u_columns.ID) << " ";
+             << std::setw(19) << std::left << std::setfill('0') << user_iter->get_value(u_columns.ID) << " ";
         if ((*user_iter)[u_columns.birthday_day] == 0)
             text << "ND        00    ";
         else
             text << std::setw(9) << std::left << std::setfill(' ') << user_iter->get_value(u_columns.birthday_month) << " "
-                 << std::setw(2) << std::right << std::setfill('0') << user_iter->get_value(u_columns.birthday_day) << "    ";
-        text << (*user_iter)[u_columns.introduction]
-            ? "yes    "
-            : "no     ";
-        text << (*user_iter)[u_columns.review]
-            ? "yes    "
-            : "no     ";
+                 << std::setw(2) << std::right << std::setfill('0') << user_iter->get_value(u_columns.birthday_day) << "   ";
+        if ((*user_iter)[u_columns.introduction])
+            text << "yes    ";
+        else
+            text << "no     ";
+        if ((*user_iter)[u_columns.review])
+            text << "yes     ";
+        else
+            text << "no      ";
 
         //This part deals with the count of warns of the user, just go through the warn_list
         //and count the amount of identical ID
