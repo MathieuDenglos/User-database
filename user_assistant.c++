@@ -115,17 +115,9 @@ void user_assistant::on_ID_changed()
         ID_valid = false;
         return;
     }
-    catch (std::out_of_range const &e)
-    {
-        ID_valid = false;
-        return;
-    }
 
     //If it's over 1.0e18, it is a valid ID
-    if (ID >= 100000000000000000)
-        ID_valid = true;
-    else
-        ID_valid = false;
+    ID_valid = ID >= 100000000000000000;
 
     //verify with the other condition to possibly validate the page
     on_username_changed();
@@ -169,8 +161,7 @@ void user_assistant::launch_assistant(std::string username /*= ""*/,
     if (birthday_day != 0)
     {
         set_title("add user");
-        for (int i = 0; i < birthday_month.size(); i++)
-            birthday_month[i] -= 32 * (birthday_month[i] >= 97 && birthday_month[i] <= 122);
+        std::transform(birthday_month.begin(), birthday_month.end(), birthday_month.begin(), ::toupper);
         month_combo.set_active(months::months_map.at(birthday_month) - 1);
         day_adjustment->set_value(birthday_day);
     }
