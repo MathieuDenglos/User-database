@@ -2,12 +2,20 @@
 #define DIALOG_H
 
 #include <string>
+#include <exception>
 
 class window;
 
-enum class ERROR
+struct action_canceled : public std::exception
 {
-    CANCEL
+private:
+    const char *what_message = "action canceled, cannot continue";
+
+public:
+    action_canceled(const char *what_message) : what_message(what_message) {}
+    action_canceled() = default;
+
+    const char *what() const noexcept { return what_message; }
 };
 
 class dialog

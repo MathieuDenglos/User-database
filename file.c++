@@ -111,7 +111,7 @@ bool file::file_opener(window &win)
                 return false;
         }
     }
-    catch (const ERROR &CANCEL)
+    catch (const action_canceled &cancel)
     {
         return false;
     }
@@ -155,7 +155,7 @@ void file::file_saver(window &win, bool saveas)
         //Tells the user that the file is saved
         win.change_title(true);
     }
-    catch (const ERROR &CANCEL)
+    catch (const action_canceled &cancel)
     {
     }
 }
