@@ -80,3 +80,8 @@ void birthday_window::show_birthday_window(window &win,
                              "none of the user gave their birthday");
     }
 }
+
+void birthday_window::on_close()
+{
+    this->hide();
+}

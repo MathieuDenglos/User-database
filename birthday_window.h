@@ -26,7 +26,7 @@ private:
     std::vector<birthday_list> birthdays;
 
     //Signal handlers
-    void on_close() { hide(); }
+    void on_close();
 
 public:
     //Constructor
