@@ -304,22 +304,27 @@ void user_search::on_search(user_list &users, warn_list &warns)
         }
     }
 
+    //Defines const bool for readability later
+    const bool users_found = !users_visible_model->children().empty();
+    const bool warns_found = !warns_visible_model->children().empty();
+    const bool over_2_warns = warns_visible_model->children().size() > 2;
+    const bool over_7_users = users_visible_model->children().size() > 7;
+
     //Now depending on the search type and whether elements got found
     //Either show the list, a label stating that nothing got found or nothing
     switch (search_type.get_active()->get_value(options_columns.option))
     {
     case USER_DATA::USERNAME:
     case USER_DATA::ID:
-        if (warns_visible_model->children().size() != 0)
+        if (warns_found)
         {
             warn_frame.show();
-            warn_frame.set_size_request(420, 26 * (warns_visible_model->children().size() + 1) * (warns_visible_model->children().size() < 3) +
-                                                 120 * (warns_visible_model->children().size() >= 3));
+            warn_frame.set_size_request(420, 26 * (warns_visible_model->children().size() + 1) * !over_2_warns + 120 * over_2_warns);
         }
         else
             no_warns_label.show();
     default:
-        if (users_visible_model->children().size() != 0)
+        if (users_found)
             user_frame.show();
         else
             no_users_label.show();
@@ -327,49 +332,36 @@ void user_search::on_search(user_list &users, warn_list &warns)
 
     //change the size of the search window so the information fits nicely
     set_size_request(420, 224 +
-                              40 * no_users_label.is_visible() +
-                              (32 * (users_visible_model->children().size() + 1) * (users_visible_model->children().size() < 8) +
-                               280 * (users_visible_model->children().size() >= 8)) *
-                                  user_frame.is_visible() +
-                              40 * no_warns_label.is_visible() +
-                              (26 * (warns_visible_model->children().size() + 1) * (warns_visible_model->children().size() < 3) +
-                               120 * (warns_visible_model->children().size() >= 3)) *
-                                  warn_frame.is_visible());
+                              !users_found * 40 +
+                              users_found * (32 * (users_visible_model->children().size() + 1) * !over_7_users + 280 * over_7_users) +
+                              !warns_found * 40 +
+                              warns_found * (26 * (warns_visible_model->children().size() + 1) * !over_2_warns + 120 * over_2_warns));
 }
 
 bool user_search::search_conditions(Gtk::TreeModel::Row row, user_list &users)
 {
-    //Grabs the useful data (USER_DATA type for speed ; upper_* to prevent cap sensibility)
-    std::string upper_username = row.get_value(users.get_columns().username);
-    std::transform(upper_username.begin(), upper_username.end(), upper_username.begin(), ::toupper);
-    std::string upper_search = username_entry.get_text();
-    std::transform(upper_search.begin(), upper_search.end(), upper_search.begin(), ::toupper);
+    //verify whether the user verified follows the searched properties
     USER_DATA type = search_type.get_active()->get_value(options_columns.option);
 
-    //returns depending on the search factors if the user follows them
-    return (
-        (
-            //If option in username verify if the letters entered on the entry are in the begining of the username (case sensitive)
-            type == USER_DATA::USERNAME && !upper_username.rfind(upper_search, 0)) ||
-        (
-            //If option in ID verify if the ID entered is the same as the one of the user
-            type == USER_DATA::ID && row.get_value(users.get_columns().ID) == std::stoll(ID_entry.get_text())) ||
-        (
-            //If option in birthday, verify what we're searching for (month, day, both, none) and verify if the user birthday enter the category
-            type == USER_DATA::BIRTHDAY &&
-            ((
-                 !month_check.get_active() && row.get_value(users.get_columns().birthday_month) != "ND") ||
-             (month_check.get_active() && row.get_value(users.get_columns().birthday_month) == month_combo.get_active()->get_value(month_combo.get_months_columns().month))) &&
-            ((
-                 !day_check.get_active() && row.get_value(users.get_columns().birthday_day) != 0) ||
-             (day_check.get_active() && row.get_value(users.get_columns().birthday_day) == day_adjustment->get_value()))) ||
-        (
-            //If option in other, verify what we're asking for and if the user follow this
-            type == USER_DATA::OTHER &&
-            !(
-                (
-                    introduction_check.get_active() && !row.get_value(users.get_columns().introduction)) ||
-                (review_check.get_active() && !row.get_value(users.get_columns().review)))));
+    const bool same_username = type == USER_DATA::USERNAME &&
+                               std::equal(username_entry.get_text().begin(), username_entry.get_text().end(),                           //searched
+                                          row.get_value(users.get_columns().username).begin(),                                          //compared
+                                          [](const char &c1, const char &c2) -> bool { return std::toupper(c1) == std::toupper(c2); }); //for the case insensitivity
+
+    const bool same_ID = type == USER_DATA::ID &&
+                         row.get_value(users.get_columns().ID) == std::stoll(ID_entry.get_text());
+
+    const bool same_birthday = type == USER_DATA::BIRTHDAY &&
+                               ((!month_check.get_active() && row.get_value(users.get_columns().birthday_month) != "ND") ||
+                                (month_check.get_active() && row.get_value(users.get_columns().birthday_month) == month_combo.get_active()->get_value(month_combo.get_months_columns().month))) &&
+                               ((!day_check.get_active() && row.get_value(users.get_columns().birthday_day) != 0) ||
+                                (day_check.get_active() && row.get_value(users.get_columns().birthday_day) == day_adjustment->get_value()));
+
+    const bool same_other = type == USER_DATA::OTHER &&
+                            !((introduction_check.get_active() && !row.get_value(users.get_columns().introduction)) ||
+                              (review_check.get_active() && !row.get_value(users.get_columns().review)));
+
+    return same_username || same_ID || same_birthday || same_other;
 }
 
 void user_search::copy_user_row(Gtk::TreeModel::Row &receiving_row, Gtk::TreeModel::Row giving_row, user_list &users)
